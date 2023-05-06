@@ -25,7 +25,7 @@ int randomnumber(float min ,  float max, float player_pos) {
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(600, 600), "My game");
+    sf::RenderWindow window(sf::VideoMode(700, 700), "My game");
 
     //defining player
     sf::RectangleShape player(sf::Vector2f(75 , 75));
