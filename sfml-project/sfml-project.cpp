@@ -25,7 +25,7 @@ int randomnumber(float min ,  float max, float player_pos) {
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(700, 700), "My game");
+    sf::RenderWindow window(sf::VideoMode(700, 768), "My game");
 
     //defining player
     sf::RectangleShape player(sf::Vector2f(75 , 75));
@@ -67,9 +67,9 @@ int main()
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
             player.move(0, speed*deltaTime.asSeconds());
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A ) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-            player.move(-speed * deltaTime.asSeconds(), 0);
+            player.move(-speed * deltaTime.asSeconds() * window.getSize().x / 500, 0);
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-            player.move(speed * deltaTime.asSeconds(), 0);
+            player.move(speed * deltaTime.asSeconds() * window.getSize().x / 500, 0);
 
 
         // Keep the player within the screen bounds
