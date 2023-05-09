@@ -3,10 +3,19 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <random>
+#include <vector>
 
 using namespace std;
 
-int randomnumber(float min ,  float max, float player_pos) {
+sf::Vector2f generateRandomPosition(float minX, float maxX, float minY, float maxY) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> distX(minX, maxX);
+    std::uniform_real_distribution<float> distY(minY, maxY);
+    return sf::Vector2f(distX(gen), distY(gen));
+}
+
+int randomnumber(float min, float max, float player_pos) {
     // Create a random number generator
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -23,9 +32,10 @@ int randomnumber(float min ,  float max, float player_pos) {
     return randomNumber;
 }
 
+
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(700, 768), "My game");
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "My game");
 
     //defining player
     sf::RectangleShape player(sf::Vector2f(75 , 75));
@@ -33,11 +43,28 @@ int main()
     player.setOrigin(player.getSize().x / 2, player.getSize().y / 2);
     player.setPosition(window.getSize().x/2, 560);
 
+    std::vector<sf::CircleShape> greenCircles;
+
+    // Generate initial green circles
+
+    for (int i = 0; i < 5; i++) {
+        sf::CircleShape greenCircle(20.0f);
+        greenCircle.setFillColor(sf::Color::Green);
+        greenCircle.setOrigin(greenCircle.getGlobalBounds().width / 2, greenCircle.getGlobalBounds().height / 2);
+        sf::Vector2f position = generateRandomPosition(0, window.getSize().x, 0, window.getSize().y / 2);
+        greenCircle.setPosition(randomnumber(0, window.getSize().x, player.getPosition().x), 0);
+        greenCircles.push_back(greenCircle);
+    }
+
+
     //defining asteroids 
     sf::CircleShape asteroid(20.0f);
     asteroid.setFillColor(sf::Color::Red);
-    asteroid.setOrigin(asteroid.getGlobalBounds().width / 2, asteroid.getGlobalBounds().height / 2);
-    asteroid.setPosition(100, 0);
+    asteroid.setOrigin(asteroid.getGlobalBounds().width / 2 , asteroid.getGlobalBounds().height / 2 );
+    sf::Vector2f position = generateRandomPosition(0, window.getSize().x , window.getSize().y / 2 , window.getSize().y);
+    asteroid.setPosition(position);
+    
+
 
 
     //global variables
@@ -51,6 +78,7 @@ int main()
 
     while (window.isOpen())
     {
+
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -60,6 +88,26 @@ int main()
 
         //checking delta time
         sf::Time deltaTime = clock.restart();
+
+        // Update the positions of the green circles
+        for (sf::CircleShape& circle : greenCircles) {
+            circle.move(0, gravity * deltaTime.asSeconds());
+
+            // Check if a green circle is out of the screen
+            if (circle.getPosition().y > window.getSize().y) {
+                circle.setPosition(randomnumber(0, window.getSize().x, player.getPosition().x), 0);
+                score++;
+                cout << score;
+            }
+
+            // Check for collision with the player
+            if (circle.getGlobalBounds().intersects(player.getGlobalBounds())) {
+                circle.setPosition(randomnumber(0, window.getSize().x, player.getPosition().x), 0);
+                cout << "You ded";
+                window.close();
+            }
+        }
+
 
         //movement
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
@@ -95,12 +143,30 @@ int main()
             window.close();
         }
 
+       
+
+        
+
+        
+        
+       
+
         window.clear();
         window.draw(player);
         window.draw(asteroid);
+        for (const sf::CircleShape& circle : greenCircles) {
+            window.draw(circle);
+        }
         window.display();
     }
 
     return 0;
 }
+
+
+
+
+
+
+
 
