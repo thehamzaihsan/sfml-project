@@ -39,11 +39,14 @@ int main()
     asteroid.setOrigin(asteroid.getGlobalBounds().width / 2, asteroid.getGlobalBounds().height / 2);
     asteroid.setPosition(100, 0);
 
+    sf::CircleShape asteroids[5];
+    int l = 0;
 
     //global variables
     float speed = 270.0f;
     float gravity = 350.0f;
     int score = 0;
+
 
 
     //clock to check time and then calculate delta time
@@ -82,6 +85,8 @@ int main()
 
 
         asteroid.move(0, gravity* deltaTime.asSeconds());
+
+
         
         if (asteroid.getPosition().y > window.getSize().y) {
             asteroid.setPosition(randomnumber(0, window.getSize().x, player.getPosition().x), 0);
